@@ -53,6 +53,7 @@ class UsersAPI:
             payload = json.dumps({"email": email, "password": password})
         response = self.api_reqres.post_request(APIPoint.REGISTER, data=payload,
                                                 headers={'Content-Type': 'application/json'})
+
         return Response(response)
 
     def login_user(self, email: str | None, password: str | None) -> Response:
@@ -75,6 +76,7 @@ class UsersAPI:
         assert list_users.response_status == 200
         list_users.validate(DefaultListUsers)
 
+
     @staticmethod
     def should_be_valid_response_status_and_body_from_request_single_users(single_user, user_id: int) -> NoReturn:
         if user_id <= 12:
@@ -91,15 +93,23 @@ class UsersAPI:
             create_user.validate(DefaultCreateUserWithoutData)
         elif name is None and job is not None:
             create_user.validate(DefaultCreateUserWithoutName)
+            assert job == create_user.response_json["job"]
         elif name is not None and job is None:
             create_user.validate(DefaultCreateUserWithoutJob)
+            assert name == create_user.response_json["name"]
         else:
             create_user.validate(DefaultCreateUser)
+            assert name == create_user.response_json["name"]
+            assert job == create_user.response_json["job"]
 
     @staticmethod
-    def should_be_valid_response_status_and_body_from_request_update_user(update_user) -> NoReturn:
+    def should_be_valid_response_status_and_body_from_request_update_user(update_user, name: str | None, job: str | None) -> NoReturn:
         assert update_user.response_status == 200
         update_user.validate(DefaultUpdateUser)
+        if name is not None:
+            assert name == update_user.response_json["name"]
+        if job is not None:
+            assert job == update_user.response_json["job"]
 
     @staticmethod
     def should_be_valid_response_status_and_body_from_request_delete_user(delete_user) -> NoReturn:

@@ -44,7 +44,7 @@ class TestUsersAPI:
             update_user = users_api.update_user(method, user_id, name, job)
 
         with allure.step("Check correct status-code and body of answer"):
-            users_api.should_be_valid_response_status_and_body_from_request_update_user(update_user)
+            users_api.should_be_valid_response_status_and_body_from_request_update_user(update_user, name, job)
 
     @allure.title('DELETE USER with id {user_id}')
     @pytest.mark.parametrize('user_id', [random_number(1, 10)])
